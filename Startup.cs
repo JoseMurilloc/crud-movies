@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Dotnet.Mvc.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
+using AspNetCore.RouteAnalyzer;
 
 namespace Dotnet.Mvc
 {
@@ -27,12 +28,13 @@ namespace Dotnet.Mvc
   if (Environment.IsDevelopment()) {
     services.AddDbContext<RazorPagesMovieContext>(options =>
     options.UseSqlite(
-      Configuration.GetConnectionString("MovieContext")));
+      Configuration.GetConnectionString("DefaultConnection")));
   } else {
     services.AddDbContext<RazorPagesMovieContext>(options =>
-      options.UseSqlite(Configuration.GetConnectionString("MovieContext")));
+      options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
   }
 
+  services.AddRouteAnalyzer();
   services.AddControllersWithViews();
 
   services.AddRazorPages();
@@ -43,13 +45,13 @@ namespace Dotnet.Mvc
   {
   if (env.IsDevelopment())
   {
-  app.UseDeveloperExceptionPage();
+    app.UseDeveloperExceptionPage();
   }
   else
   {
-  app.UseExceptionHandler("/Home/Error");
-  // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-  app.UseHsts();
+    app.UseExceptionHandler("/Home/Error");
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseHsts();
   }
   app.UseHttpsRedirection();
   app.UseStaticFiles();
